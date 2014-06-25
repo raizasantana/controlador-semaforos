@@ -41,7 +41,7 @@ void p010_Recupera_Guarda_Tempo()
 	
 	if (!G_01_Arquivo)
 	{
-		printf ("Com problema - Abertura 01");
+		printf ("\n[!!!] Com problema - Abertura Recupera_Guarda_Tempo()\n\n");
 		return;
 	}
 	
@@ -87,14 +87,16 @@ void p040_Recupera_Ordem(int P040_Ordem)
 
 	if (!G_01_Arquivo)
 	{
-		printf ("Com problema - Abertura 01\n");
+		printf ("\n[!!!] Com problema - Abertura Recupera_Ordem()\n\n");
 		return;
 	}
 
-	while (!feof(G_01_Arquivo))
+
+	while (fgets (G_02_Registro, 80, G_01_Arquivo) != NULL)
 	{
-		fgets(G_02_Registro, 80, G_01_Arquivo);
-		//puts(G_02_Registro);
+		//fgets(G_02_Registro, 80, G_01_Arquivo);
+		puts(G_02_Registro);
+
 		P040_01_Aux = atoi(strtok(G_02_Registro,";"));
 		P040_02_Index = P040_01_Aux;
 	
