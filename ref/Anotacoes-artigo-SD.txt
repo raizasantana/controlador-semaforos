@@ -1,0 +1,130 @@
+Roteiro
+- Problema
+- Solução sugerida
+- Entendendo a solução
+  - Controlador de Fluxo
+  - Controlador de Semáforo
+  - RNA
+- Sugestões de alteração (???)
+- Resultados Esperados
+- Cronograma
+
+
+A regulagem do sistema integrado foi realizada com uma Rede Neural Artificial recorrente e um Controle Adaptativo em tempo-real.
+
+
+-- Outros trabalhos importantes
+
+O trabalho de Roozemond e Rogier (2000) contém a proposta de
+construção de uma unidade de controle de trânsito adaptativo
+baseado na tecnologia de agentes inteligentes para alterar um
+semáforo em tempo-real. A aplicação de agentes inteligentes em um
+sistema de controle de semáforos, segundo os autores, poderá
+garantir uma operação ótima e balanceada de acordo com o fluxo de
+veículos. Como conclusão, é destacado que o sistema de controle
+adaptativo pode ajustar de forma otimizada semáforos para controlar
+o trânsito, fato comprovado através de simulação.
+
+O trabalho de De Ré (1995) apresenta a abordagem de utilização de
+RNA para ampliar o escopo de controle, possibilitando a atualização
+de regras da máquina de inferência do sistema de controle. Através
+desta abordagem, as melhorias são efetivas nas máquinas de
+inferência de sistemas inteligentes. Como exemplo para a aplicação
+desta proposta, foi estudado um controlador de tráfego urbano para
+uma única intersecção isolada, o qual apresenta uma lógica difusa,
+através de esquema adaptativo, com ajuste de funções de
+pertinências de acordo com determinadas condições de tráfego. A
+proposta foi comprovada no trabalho e com possibilidades de
+trabalhos futuros. A autora recomenda a ampliação do universo a ser
+analisado, estendendo o controle a um número maior de intersecções
+que possam influenciar sobre a determinação do fluxo de veículos.
+
+Manikonda at al (2001) descrevem a infraestrutura de um sistema
+composta por agentes autônomos para controlar semáforos em vias
+urbanas. Este sistema utilizando processamento distribuído seria
+capaz de resolver todos os problemas de controle de intersecções
+semaforizadas. Cada agente será responsável em controlar, em
+tempo-real, uma intersecção.
+
+
+-- Teoria
+
+- O fluxo, que é equivalente a razão entre os veículos que passam em
+um ponto da via durante um período de tempo inferior a uma hora,
+que pode ser determinada por:
+q=3600.n/t  (2.1)
+onde:
+n é o número de veículos passados no ponto da via em t
+segundos.
+t é o tempo em segundos.
+q é o equivalente ao fluxo em uma hora.
+
+- A densidade ou concentração, que é a quantidade de veículos
+trafegando em um intervalo da via em um determinado tempo t
+(normalmente, um minuto). A unidade de densidade é veículos por
+metros (vpm).
+
+- A velocidade, que é a distância percorrida por um veículo durante
+uma unidade de tempo t. Ela pode ser expressa em quilômetros por
+hora (km/h), por exemplo.
+
+
+- Independente do tipo de semáforo veicular, na sua regulagem, a
+seqüência de indicação do verde, amarelo e vermelho e, novamente, o verde,
+quando aplicada a uma via do trânsito é denominada de fase, e o tempo total,
+em segundos, para a completa seqüência de sinalização numa intersecção
+(todas as fases) é denominado de ciclo. Um dos vários períodos de um ciclo é
+denominado de estágio ou intervalo, e corresponde ao tempo em que uma
+determinada indicação luminosa dá o direito de passagem a uma corrente de
+tráfego e/ou pedestre, enquanto as demais ficam paradas (DENATRAN, 1984,
+p.16).
+
+- Um controlador de tráfego pode ser de três (3) categorias (DENATRAN,
+1984, p.26-27):
+1. Controle Isolado de Cruzamento, quando o controle dos movimentos
+de tráfego baseia-se no fluxo de veículos de uma única intersecção
+de vias. Neste caso, não há preocupação com as eventuais
+influências das intersecções adjacentes;
+2. Controle Arterial de Cruzamento (Rede Aberta), quando o controle
+dos movimentos de uma via principal (corredor) visa garantir a
+continuidade do seu fluxo de veículos sobre as intersecções
+adjacentes (sistema progressivo ou onda verde); e
+3. Controle de Cruzamentos em Área (Rede Fechada), quando no
+controle são considerados todas as intersecções sinalizadas em uma
+determinada área.
+
+Há dois (2) tipos básicos de controladores (DENATRAN, 1984, p.27):
+Nos controladores de tempo fixo, o tempo de ciclo é constante,
+enquanto que a duração e os instantes de mudança dos estágios são
+fixos em relação ao ciclo. Todos os valores são parâmetros do plano
+de tráfego ou programação semafórica;
+Os controladores por demanda de tráfego são mais complexos que
+os de tempo fixo, por requisitarem detectores de veículos e lógica de
+decisão. O objetivo básico é dar o tempo de verde de cada corrente
+de tráfego de acordo com a sua necessidade, ajustando-se
+dinamicamente ao fluxo dos veículos que ocorrem em uma
+intersecção.
+
+- Lo, Chan e Chow (2001) identificam três (3) tipos de estratégias de
+regulagem de semáforos:
+
+1. Tempo Fixo, quando o tempo de cada ciclo e o tempo de cada uma
+das fases é sempre o mesmo (Figura 2-7.a);
+2. Tempo de Verde Variável em Ciclo Fixo, quando o tempo de cada
+ciclo é fixo, mas o tempo de verde é variável de acordo com o fluxo
+do trânsito (Figura 2-7.b); e
+3. Tempo de Verde Variável em Ciclo Não-Fixo, quando o tempo de
+cada ciclo e o tempo de verde é variável de acordo com as condições
+do tráfego (Figura 2-7.c).
+
+/* CONCLUSÃO DA MOTIVAÇÃO */
+
+A impossibilidade de trabalhar com padrões pré-estabelecidos e a
+exigência de um ajuste fino na programação semafórica levam à conclusão de
+que a única forma de lidar eficientemente com o problema é a de se valer de técnicas de controle que procurem, continuamente, se adaptar às variações da realidade (VILANOVA, 2004). Para conseguir isso, é necessário, em primeiro lugar, “ler” a situação vigente do trânsito de rua, para em seguida calcular as mudanças que vão adequar as temporizações dos semáforos às variações percebidas no perfil do trânsito e, finalmente, implementar tais mudanças nos semáforos de uma forma organizada (VILANOVA, 2004), ou seja, uma regulagem em tempo-real.
+
+/* TIPO DE RNA UTILIZADA NO PROBLEMA */
+
+O modelo de RNR Backpropagation Through Time – BPTT (Figura 2-9)
+pode ser implementado a partir de uma RNA Backpropagation, que é estática,
+com a utilização de janelas de tempo, em que a entrada da rede utiliza trechos dos dados temporais como se eles formassem um padrão estático (BRAGA, CARVALHO e LUDEMIR, 2000, p.209; HAYKIN, 2001, p. 49).
