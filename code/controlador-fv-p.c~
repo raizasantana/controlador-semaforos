@@ -1,5 +1,5 @@
 /*
-* Controlador de Fluxo de Veiculos
+* Controlador de Fluxo de Veiculos - Via Principal
 */
 
 #include <stdio.h>
@@ -22,7 +22,7 @@
 
 FILE *arquivo;
 char registro02 [100] = "\0";
-//char *end_arq_principal_E = "arquivos/cfv_principal_E.txt";
+
 char *end_arq_via1 = "arquivos/fluxo-p-via1.txt";
 char *end_arq_via2 = "arquivos/fluxo-p-via2.txt";
 

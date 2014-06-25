@@ -1,5 +1,5 @@
 /*
-* Controlador de Fluxo de Veiculos
+* Controlador de Fluxo de Veiculos - Via Principal
 */
 
 #include <stdio.h>
