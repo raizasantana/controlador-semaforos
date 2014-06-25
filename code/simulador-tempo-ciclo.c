@@ -43,7 +43,7 @@ int main()
 		
 		printf("Verde%d Amarelo%d Vermelho%d\n",tempo_verde[i], tempo_amarelo[i],tempo_vermelho[i]);
 			
-		sprintf(registro, "%d  %d  %d %d\n",i + 1,tempo_verde[i],tempo_amarelo[i],tempo_vermelho[i]);
+		sprintf(registro, "%d;%d;%d;%d\n",i + 1,tempo_verde[i],tempo_amarelo[i],tempo_vermelho[i]);
 		
 		fputs (registro, arquivo);
 

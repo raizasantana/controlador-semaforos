@@ -14,7 +14,7 @@
 FILE *G_01_Arquivo;
 char G_02_Registro [80] = "\0";
 char *G_03_Endereco_Arquivo = "arquivos/tempo-ciclo-csi.TXT";
-char *G_04_Endereco_Arquivo = "arquivos/CSI-ORD.TXT";
+char *G_04_Endereco_Arquivo = "arquivos/ordem-csi.TXT";
 char *G_05_Endereco_Arquivo = "arquivos/CSI-ACAO.TXT";
 
 int *G_06_Tempo_Verde;
@@ -45,9 +45,9 @@ void p010_Recupera_Guarda_Tempo()
 		return;
 	}
 	
-	while (!feof(G_01_Arquivo))
+	while (fgets (G_02_Registro, 80, G_01_Arquivo) != NULL)
 	{
-		fgets(G_02_Registro, 80, G_01_Arquivo);
+		
 		//puts(G_02_Registro);
 		P010_01_Aux = atoi(strtok(G_02_Registro,";"));
 		P010_02_Index = P010_01_Aux;
@@ -80,12 +80,14 @@ int p030_Numero_Aleatorio (int P040_Numero)
 void p040_Recupera_Ordem(int P040_Ordem)
 {
 	int P040_01_Aux = 0, P040_02_Index = 0;
+
 	G_07_Ordem = (int *) calloc (P040_Ordem, sizeof(int));
+
 	G_01_Arquivo = fopen (G_04_Endereco_Arquivo, "r");
 
 	if (!G_01_Arquivo)
 	{
-		printf ("Com problema - Abertura 01");
+		printf ("Com problema - Abertura 01\n");
 		return;
 	}
 
@@ -98,6 +100,7 @@ void p040_Recupera_Ordem(int P040_Ordem)
 	
 		if (P040_02_Index > P040_Ordem)
 			break;
+
 		P040_01_Aux = atoi(strtok(NULL,";"));
 		G_07_Ordem[P040_02_Index] = P040_01_Aux;
 	}
@@ -107,24 +110,36 @@ void p040_Recupera_Ordem(int P040_Ordem)
 
 int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 {
+
+	/*
+	#define INTERMITENTE 0
+	#define VERDE 1
+	#define AMARELO 2
+	#define VERMELHO 3
+	*/
 	static P090_01_Sinal_1 = 0;
 	static P090_02_Sinal_2 = 0;
+
 	static P090_03_Proximo_1 = 0;
 	static P090_04_Proximo_2 = 0;
+
 	static P090_05_Antes_1 = 0;
 	static P090_06_Antes_2 = 0;
+
 	int P090_07_Qual_Tempo = 0;
 	int P090_08_Tempo_Recuperado = 0;
+
 	time_t P090_09_Inicio;
 	time_t P090_10_Fim;
+
 	int P090_11_Diferenca = 0;
 	int P090_12_Fez_Recursividade = 0;
 
 	// achar qual o proximo ciclo
-	if (P090_01_Sinal_1 == 0 && P090_01_Sinal_1 == 0) // intermitente
+	if (P090_01_Sinal_1 == INTERMITENTE && P090_01_Sinal_1 == INTERMITENTE) // intermitente
 	{
-		P090_03_Proximo_1 = 3;
-		P090_04_Proximo_2 = 3;
+		P090_03_Proximo_1 = VERMELHO;
+		P090_04_Proximo_2 = VERMELHO;
 	}
 	else
 	{
@@ -135,14 +150,14 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 		{
 			if (P090_03_Proximo_1 > 3)
 			{
-				if (P090_05_Antes_1 == 2)
-					P090_03_Proximo_1 = 3;
+				if (P090_05_Antes_1 == AMARELO)
+					P090_03_Proximo_1 = VERMELHO;
 				else
 				{
-					if (P090_02_Sinal_2 == 1 || P090_02_Sinal_2 == 2)
-						P090_03_Proximo_1 = 3;
+					if (P090_02_Sinal_2 == VERDE || P090_02_Sinal_2 == AMARELO)
+						P090_03_Proximo_1 = VERMELHO;
 					else
-						P090_03_Proximo_1 = 1;
+						P090_03_Proximo_1 = VERDE;
 				}
 			}
 		}
@@ -151,18 +166,18 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 		{
 			if (P090_04_Proximo_2 > 3)
 			{
-				if (P090_06_Antes_2 == 2)
-					P090_04_Proximo_2 = 3;
+				if (P090_06_Antes_2 == AMARELO)
+					P090_04_Proximo_2 = VERMELHO;
 				else
 				{
-					if (P090_01_Sinal_1 == 1 || P090_01_Sinal_1 == 2)
-						P090_04_Proximo_2 = 3;
+					if (P090_01_Sinal_1 == VERDE || P090_01_Sinal_1 == AMARELO)
+						P090_04_Proximo_2 = VERMELHO;
 					else
 					{
-						if (P090_05_Antes_1 == 0)	
-							P090_04_Proximo_2 = 3;
+						if (P090_05_Antes_1 == INTERMITENTE)	
+							P090_04_Proximo_2 = VERMELHO;
 						else
-							P090_04_Proximo_2 = 1;
+							P090_04_Proximo_2 = VERDE;
 					}
 				}
 			}
@@ -187,16 +202,16 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 
 	switch(P090_01_Sinal_1)
 	{
-		case 1 : printf("Sinal 1=%d Verde ", P090_01_Sinal_1);
+		case 1 : printf("Sinal 1=%d Verde\n ", P090_01_Sinal_1);
 		break;
 
-		case 2 : printf("Sinal 1=%d Amarelo ", P090_01_Sinal_1);
+		case 2 : printf("Sinal 1=%d Amarelo\n ", P090_01_Sinal_1);
 		break;
 
-		case 3 : printf("Sinal 1=%d Vermelho ", P090_01_Sinal_1);
+		case 3 : printf("Sinal 1=%d Vermelho\n ", P090_01_Sinal_1);
 		break;
 	
-		default: printf("Sinal 1=%d Intermitente ", P090_01_Sinal_1);
+		default: printf("Sinal 1=%d Intermitente\n ", P090_01_Sinal_1);
 		break;
 	}
 
@@ -237,10 +252,10 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 		P090_07_Qual_Tempo = p030_Numero_Aleatorio (24);
 		P090_07_Qual_Tempo++;
 		
-		if (P090_01_Sinal_1 == 1)
+		if (P090_01_Sinal_1 == VERDE)
 			P090_08_Tempo_Recuperado = G_06_Tempo_Verde[P090_07_Qual_Tempo];
 		else
-			if (P090_01_Sinal_1 == 2)
+			if (P090_01_Sinal_1 == AMARELO)
 				P090_08_Tempo_Recuperado = G_06_Tempo_Amarelo[P090_07_Qual_Tempo];
 		else
 			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[P090_07_Qual_Tempo];
@@ -259,11 +274,13 @@ int p100_Processa(int P100_Qtd_Ordem, int P100_Qtd_Ciclo)
 {
 	time_t P100_01_Inicio;
 	time_t P100_02_Fim;
+
 	int P100_03_Ha_Ordem = 0;
 	int P100_04_Resultado = 0;
 	int P100_05_Qual_Ordem = 0;
 	int P100_06_Ordem_1 = 0;
 	int P100_07_Ordem_2 = 0;
+
 	int P100_08_Diferenca = 0;
 	int P100_09_Tempo_Ciclo = 0;
 	int P100_10_Qtd_Ordem = 0;
@@ -344,8 +361,8 @@ int main(int argc, char *argv[])
 {
 
 
-int L_01_Qtd_Ordem = 0;
-int L_02_Qtd_Ciclo = 0;
+	int L_01_Qtd_Ordem = 0;
+	int L_02_Qtd_Ciclo = 0;
 
 	p010_Recupera_Guarda_Tempo();
 
