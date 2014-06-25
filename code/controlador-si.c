@@ -6,11 +6,16 @@
 #define MULTIPLO 5
 #define ESCOLHIDO 2
 
+#define INTERMITENTE 0
+#define VERDE 1
+#define AMARELO 2
+#define VERMELHO 3
+
 FILE *G_01_Arquivo;
 char G_02_Registro [80] = "\0";
-char *G_03_Endereco_Arquivo = "CSI-TMPE.TXT";
-char *G_04_Endereco_Arquivo = "CSI-ORD.TXT";
-char *G_05_Endereco_Arquivo = "CSI-ACAO.TXT";
+char *G_03_Endereco_Arquivo = "arquivos/tempo-ciclo-csi.TXT";
+char *G_04_Endereco_Arquivo = "arquivos/CSI-ORD.TXT";
+char *G_05_Endereco_Arquivo = "arquivos/CSI-ACAO.TXT";
 
 int *G_06_Tempo_Verde;
 int *G_06_Tempo_Amarelo;
@@ -27,9 +32,11 @@ int *G_07_Ordem;
 void p010_Recupera_Guarda_Tempo()
 {
 	int P010_01_Aux = 0, P010_02_Index = 0;
+
 	G_06_Tempo_Verde = (int *) calloc (24, sizeof(int));
 	G_06_Tempo_Amarelo = (int *) calloc (24, sizeof(int));
 	G_06_Tempo_Vermelho = (int *) calloc (24, sizeof(int));
+
 	G_01_Arquivo = fopen (G_03_Endereco_Arquivo, "r");
 	
 	if (!G_01_Arquivo)
