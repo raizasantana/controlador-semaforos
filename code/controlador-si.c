@@ -94,8 +94,7 @@ void p040_Recupera_Ordem(int P040_Ordem)
 
 	while (fgets (G_02_Registro, 80, G_01_Arquivo) != NULL)
 	{
-		//fgets(G_02_Registro, 80, G_01_Arquivo);
-		puts(G_02_Registro);
+		//puts(G_02_Registro);
 
 		P040_01_Aux = atoi(strtok(G_02_Registro,";"));
 		P040_02_Index = P040_01_Aux;
@@ -204,16 +203,16 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 
 	switch(P090_01_Sinal_1)
 	{
-		case 1 : printf("Sinal 1=%d Verde\n ", P090_01_Sinal_1);
+		case 1 : printf("Sinal 1=%d Verde\n", P090_01_Sinal_1);
 		break;
 
-		case 2 : printf("Sinal 1=%d Amarelo\n ", P090_01_Sinal_1);
+		case 2 : printf("Sinal 1=%d Amarelo\n", P090_01_Sinal_1);
 		break;
 
-		case 3 : printf("Sinal 1=%d Vermelho\n ", P090_01_Sinal_1);
+		case 3 : printf("Sinal 1=%d Vermelho\n", P090_01_Sinal_1);
 		break;
 	
-		default: printf("Sinal 1=%d Intermitente\n ", P090_01_Sinal_1);
+		default: printf("Sinal 1=%d Intermitente\n", P090_01_Sinal_1);
 		break;
 	}
 
@@ -235,7 +234,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 
 	if (P090_01_Sinal_1 != P090_Ordem_1 || P090_02_Sinal_2 != P090_Ordem_2)
 	{
-		printf ("Recursividade\n");
+		printf ("\n\n[Recursividade]\n\n");
 		
 		P090_09_Inicio = time(NULL);
 
@@ -262,7 +261,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 		else
 			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[P090_07_Qual_Tempo];
 		
-		printf ("Tempo Sinal 1(%d)=%d\n\n", P090_07_Qual_Tempo,P090_08_Tempo_Recuperado);
+		printf ("\nTempo Sinal 1(%d)=%d\n\n", P090_07_Qual_Tempo,P090_08_Tempo_Recuperado);
 		
 		return(P090_08_Tempo_Recuperado);
 	}
@@ -356,9 +355,7 @@ int p100_Processa(int P100_Qtd_Ordem, int P100_Qtd_Ciclo)
 
 
 
-//********************************************************************
-// programa principal
-//********************************************************************
+
 int main(int argc, char *argv[])
 {
 
@@ -367,14 +364,12 @@ int main(int argc, char *argv[])
 	int L_02_Qtd_Ciclo = 0;
 
 	p010_Recupera_Guarda_Tempo();
-
+	printf("//********************************************************************\n//                                CSI\n//********************************************************************\n\n");
 	printf ("Informe a quantidade de ordens a processar ? ");
 	scanf ("%d", &L_01_Qtd_Ordem);
 	
 	p040_Recupera_Ordem(L_01_Qtd_Ordem);
 
-/*printf ("Informe a quantidade de ciclos a processar ? ");
-scanf ("%d", &L_02_Qtd_Ciclo);*/
 
 	L_02_Qtd_Ciclo = L_01_Qtd_Ordem;
 	p100_Processa(L_01_Qtd_Ordem, L_02_Qtd_Ciclo);
