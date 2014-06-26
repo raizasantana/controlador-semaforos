@@ -55,45 +55,36 @@ int le_entrada() // OK
 {
 	FILE * arquivo;
 	char registro[80]="\0";
-	char nome_arquivo[80]="\0";
+	char *arquivo_entrada_rn = "arquivos/entrada_rn.txt";
 	int index_01 = 0;
 	int aux = 0;
 	int index_02 = 0;
 	
-	
-	fflush(stdin);
-	printf ("Qual o arquivo de entrada:");
-	scanf("%s",nome_arquivo);
-	
-	arquivo = fopen (nome_arquivo, "r");
+	arquivo = fopen (arquivo_entrada_rn, "r");
 	
 	if (!arquivo)
 	{
-		printf ("Erro na Abertura do Arquivo %s\n\n",nome_arquivo);
+		printf ("\n[!!!] Erro na Abertura do Arquivo de Entrada da RN\n\n");
 
 		if (tem_log == 1)
 		{
-			fprintf (arquivo_01, "Erro na Abertura do Arquivo %s\n\n",nome_arquivo);
+			fprintf (arquivo_01, "\n[!!!] Erro na Abertura do Arquivo de Entrada da RN\n\n");
 		}
 		
 		return(9);
 	}
 
-	for (index_01 = 0; index_01 < 80; index_01++)
-	{
-		nome_arquivo[index_01] = toupper(nome_arquivo[index_01]);
-	}
 	
 	if (tem_log == 1)
 	{
-		fprintf (arquivo_01, "Arquivo=%s\n\n",nome_arquivo);
+		fprintf (arquivo_01, "Arquivo=%s\n\n",arquivo_entrada_rn);
 	}
 
 	
-	fgets(registro, 80, arquivo);// lendo o 1o. registro do arquivo de entrada
+	fgets(registro, 80, arquivo);
 	
-	if (!feof(arquivo))
-	{ // recuperando os parametros para montagem da rede
+	if (!feof(arquivo)) // lendo os parametros para montagem da rede
+	{
 		qtd_registro = atoi(strtok(registro,";"));
 
 		if (tem_log == 1)
@@ -160,10 +151,10 @@ int le_entrada() // OK
 	{
 		if (tem_log == 1)
 		{
-			fprintf (arquivo_01, "Erro na 1a. Leitura do Arquivo%s\n\n",nome_arquivo);
+			fprintf (arquivo_01, "\n[!!!] Erro na 1a. Leitura do Arquivo de entrada da RN\n\n");
 		}
 
-		printf("Problema na 1a. Leitura do %s\n\n",nome_arquivo);
+		printf("\n[!!!] Problema na 1a. Leitura do Arquivo de Entrada da RN\n\n");
 		return(8);
 	}
 		
@@ -175,14 +166,15 @@ int le_entrada() // OK
 	
 
 	// Carregando os registros de entrada
-	/*while (!feof(arquivo))
+	while (fgets (registro, 80, arquivo) != NULL)
 	{
-		fgets(registro, 80, arquivo);
+	
 
+		//puts(registro);
 		aux = atoi(strtok(registro, ";"));
 
 		index_01 = aux-1;
-
+		
 		entrada[index_01].sequencia = aux;
 
 		aux = atoi(strtok(NULL, ";"));
@@ -210,9 +202,11 @@ int le_entrada() // OK
 		aux = atoi(strtok(NULL, ";"));
 
 		entrada[index_01].ordem = aux;
-	}*/
+	}
 
 	fclose(arquivo);
+
+
 	return(0);
 }
 
@@ -738,7 +732,7 @@ int main(int argc, char *argv[])
 	char nome_arquivo_02 [80] = "\0";
 	char nome_arquivo_aux [80] = "\0";
 	
-	
+		printf("//********************************************************************\n//                                Rede Neural\n//********************************************************************\n\n");
 	printf("\n\n\nGravar Log do Processamento? (0=Nao / 1=Sim) ");
 	scanf("%d", &tem_log);
 
