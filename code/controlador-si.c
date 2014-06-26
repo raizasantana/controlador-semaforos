@@ -234,7 +234,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 
 	if (P090_01_Sinal_1 != P090_Ordem_1 || P090_02_Sinal_2 != P090_Ordem_2)
 	{
-		printf ("\n\n[Recursividade]\n\n");
+		printf ("\n\n[Recursividade]\n\n");//realiza a mudança de sinal respeitando o tempo até a ordem ser executada
 		
 		P090_09_Inicio = time(NULL);
 
