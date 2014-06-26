@@ -310,7 +310,8 @@ void recupera_peso(char *nome_arquivo)
 	int index_01, index_02, index_03;
 	FILE * arquivo;
 	char registro[80]="\0";
-
+	
+	
 	arquivo = fopen (nome_arquivo, "r");
 
 	if (!arquivo)
@@ -728,9 +729,9 @@ int main(int argc, char *argv[])
 {
 	float entrada = 2;
 	float saida = 0.;
-	char nome_arquivo_01 [80] = "\0";
-	char nome_arquivo_02 [80] = "\0";
-	char nome_arquivo_aux [80] = "\0";
+	char nome_arquivo_01 [80] = "arquivos/";
+	char nome_arquivo_02 [80] = "arquivos/";
+	char nome_arquivo_aux [80] = "arquivos/";
 	
 		printf("//********************************************************************\n//                                Rede Neural\n//********************************************************************\n\n");
 	printf("\n\n\nGravar Log do Processamento? (0=Nao / 1=Sim) ");
@@ -750,18 +751,15 @@ segundo);
 	{
 		inicializa_randomizacao();
 		cria_rede();
-/*	
-		//strcpy (nome_arquivo_01, nome_arquivo_aux);
+
 		strcat (nome_arquivo_01, "PR.TXT");
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Peso Recuperado=%s\n\n", nome_arquivo_01);
 		}
-
+		
 		recupera_peso(nome_arquivo_01);
-
-		//strcpy (nome_arquivo_01, nome_arquivo_aux);
-
+		
 		strcat (nome_arquivo_01, "DADO_TRE.TXT");
 		if (tem_log == 1)
 		{
@@ -769,32 +767,35 @@ segundo);
 		}
 		
 		seleciona_massa(nome_arquivo_01, 0.4);
-		//strcpy (nome_arquivo_01, nome_arquivo_aux);
+		
 		
 		strcat (nome_arquivo_01, "DADO_TES.TXT");
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Dado Teste=%s\n\n", nome_arquivo_01);
 		}	
-		seleciona_massa(nome_arquivo_01, 0.3);
 		
+		seleciona_massa(nome_arquivo_01, 0.3);
+			
 		//strcpy (nome_arquivo_01, nome_arquivo_aux);
 		strcat (nome_arquivo_01, "DADO_TRE.TXT");
+
 		strcpy (nome_arquivo_02, nome_arquivo_aux);
+
 		strcat (nome_arquivo_02, "SAIDA_TRE.TXT");
 	
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Saida Treino=%s\n\n", nome_arquivo_02);
 		}	
-		treina_rede(nome_arquivo_01, nome_arquivo_02);
+		/*treina_rede(nome_arquivo_01, nome_arquivo_02);
 	
 		//p210_Avalia_Rede();
 		//treina_rede("RNL-TS.TXT", "RNL-SS.TXT");
 		//printf ("%f ", funcao_ativacao(entrada,funcao_ativacao));
 		//printf ("%f\n",
-		//derivada_funcao_ativacao(entrada,funcao_ativacao));
-*/
+		//derivada_funcao_ativacao(entrada,funcao_ativacao));*/
+
 	}
 	fclose(arquivo_01);
 	

@@ -1,0 +1,8 @@
+Arquivo=arquivos/entrada_rn.txt
+
+Registros=200 Camadas=3 Neuronios[1]=4Neuronios[2]=4Neuronios[3]=1
+
+Momento=0.800000 Tx.Aprendizado=0.200000 Erro=0.000001 Epoca=15000 Funcao Ativacao=1
+
+Peso Recuperado=PR.TXT
+
