@@ -405,10 +405,11 @@ void seleciona_massa(char *nome_arquivo, double percentual)
 
 
 
-float funcao_ativacao (float dado, int funcao)
-{
+float funcao_ativacao (double dado, int funcao)
+{	
+
 	if (funcao == 1) 
-		return (1.0 / (1.0 + exp(-dado)));
+		return (1.0 / (1.0 +exp(-dado) ) );
 	else 
 		return (0);
 }
@@ -638,30 +639,46 @@ void treina_rede(char *nome_entrada, char *nome_saida)
 	char final[20];
 
 	// abre os arquivos
-	arquivo = fopen (nome_entrada, "r");
+	arquivo = fopen (nome_entrada, "r");	
+	if (!arquivo)
+	{
+		perror("Erro na abertura do arquivo - TREINA REDE.");
+		exit (EXIT_FAILURE);	
+	}
+
 	arquivo_02 = fopen (nome_saida, "w");
+	if (!arquivo_02)
+	{
+		perror("Erro na abertura do arquivo - TREINA REDE.");
+		exit (EXIT_FAILURE);	
+	}
 
 	// inicia a leitura do arquivo de entrada
 	epoca_local = 1;
-//
+
 	recupera_data_hora();
 	sprintf (inicio, "%04d/%02d/%02d=%02d:%02d:%02d", ano, mes, dia, hora, minuto, segundo);
-//
-	while (epoca_local <=epoca_global)
+	puts(inicio);
+	printf("%d\n",epoca_global);
+
+
+	while (epoca_local <= epoca_global)
 	{
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Epoca=%04d\n\n",epoca_local);
 		}
-		rewind (arquivo);
-
-		// le arquivo de entrada
-		fgets(registro, 80, arquivo);
 		
-		while (!feof(arquivo))
+		
+		while(fgets (registro, 80, arquivo) != NULL)
 		{
 			limpa_dados_entrada();
 			index_04 = atoi(strtok(registro, ";"));
+		}
+		rewind (arquivo);
+	
+	
+				
 		//fprintf (arquivo_02, "Reg.=%03d ", index_04);
 
 		// recupera os dados de entrada da rede
@@ -675,11 +692,10 @@ void treina_rede(char *nome_entrada, char *nome_saida)
 	
 		// faz a parte backward do backpropagation
 		backpropagation_backward (arquivo_02);
-	
+
 		// le arquivo de entrada
 		fgets(registro, 80, arquivo);
-	}
-
+		
 
 	/*
 		if (erro_padrao < erro_alvo)
@@ -700,8 +716,9 @@ void treina_rede(char *nome_entrada, char *nome_saida)
 	break;
 	}
 }*/
+
 	epoca_local++;
-	}
+}
 
 	recupera_data_hora();
 	sprintf (final, "%04d/%02d/%02d=%02d:%02d:%02d",ano, mes, dia, hora, minuto,segundo);
@@ -714,7 +731,7 @@ void treina_rede(char *nome_entrada, char *nome_saida)
 			fprintf (arquivo_01,"Epoca=%04d Inicio=%s Final=%s\n\n",epoca_local - 1, inicio, final);
 	}
 	
-	//fclose (arquivo);
+	fclose (arquivo);
 	fclose (arquivo_02);
 }
 
@@ -729,8 +746,11 @@ int main(int argc, char *argv[])
 {
 	float entrada = 2;
 	float saida = 0.;
-	char nome_arquivo_01 [80] = "arquivos/";
-	char nome_arquivo_02 [80] = "arquivos/";
+	char nome_arquivo_01[80] = "arquivos/entrada_rn.txt";
+	char nome_arquivo_PR [80] = "arquivos/";
+	char nome_arquivo_D_TRE [80] = "arquivos/";
+	char nome_arquivo_D_TES [80] = "arquivos/";
+	char nome_arquivo_S_TRE [80] = "arquivos/";
 	char nome_arquivo_aux [80] = "arquivos/";
 	
 		printf("//********************************************************************\n//                                Rede Neural\n//********************************************************************\n\n");
@@ -752,43 +772,45 @@ segundo);
 		inicializa_randomizacao();
 		cria_rede();
 
-		strcat (nome_arquivo_01, "PR.TXT");
+		strcat (nome_arquivo_PR, "PR.TXT");
 		if (tem_log == 1)
 		{
-			fprintf (arquivo_01,"Peso Recuperado=%s\n\n", nome_arquivo_01);
+			fprintf (arquivo_01,"Peso Recuperado=%s\n\n", nome_arquivo_PR);
 		}
 		
 		recupera_peso(nome_arquivo_01);
 		
-		strcat (nome_arquivo_01, "DADO_TRE.TXT");
+		strcat (nome_arquivo_D_TRE, "DADO_TRE.TXT");
 		if (tem_log == 1)
 		{
-			fprintf (arquivo_01,"Dado Teino=%s\n\n", nome_arquivo_01);
+			fprintf (arquivo_01,"Dado Teino=%s\n\n", nome_arquivo_D_TRE);
 		}
 		
 		seleciona_massa(nome_arquivo_01, 0.4);
 		
 		
-		strcat (nome_arquivo_01, "DADO_TES.TXT");
+		strcat (nome_arquivo_D_TES, "DADO_TES.TXT");
 		if (tem_log == 1)
 		{
-			fprintf (arquivo_01,"Dado Teste=%s\n\n", nome_arquivo_01);
+			fprintf (arquivo_01,"Dado Teste=%s\n\n",nome_arquivo_D_TES);
 		}	
 		
 		seleciona_massa(nome_arquivo_01, 0.3);
 			
 		//strcpy (nome_arquivo_01, nome_arquivo_aux);
-		strcat (nome_arquivo_01, "DADO_TRE.TXT");
+		strcat (nome_arquivo_D_TRE, "DADO_TRE.TXT");
 
 		strcpy (nome_arquivo_02, nome_arquivo_aux);
 
-		strcat (nome_arquivo_02, "SAIDA_TRE.TXT");
+		strcat (nome_arquivo_S_TRE, "SAIDA_TRE.TXT");
 	
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Saida Treino=%s\n\n", nome_arquivo_02);
 		}	
-		/*treina_rede(nome_arquivo_01, nome_arquivo_02);
+	
+		puts(nome_arquivo_01);
+		treina_rede(nome_arquivo_01, nome_arquivo_02);
 	
 		//p210_Avalia_Rede();
 		//treina_rede("RNL-TS.TXT", "RNL-SS.TXT");
