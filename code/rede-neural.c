@@ -758,7 +758,7 @@ int main(int argc, char *argv[])
 	scanf("%d", &tem_log);
 
 	recupera_data_hora();
-	sprintf (nome_arquivo_aux, "%04d%02d%02d_%02d%02d%02d_",ano, mes, dia, hora, minuto,segundo);
+	sprintf (nome_arquivo_aux, "arquivos/%04d%02d%02d_%02d%02d%02d_",ano, mes, dia, hora, minuto,segundo);
 
 	if (tem_log == 1)
 	{
@@ -773,6 +773,7 @@ segundo);
 		cria_rede();
 
 		strcat (nome_arquivo_PR, "PR.TXT");
+		puts(nome_arquivo_PR);
 		if (tem_log == 1)
 		{
 			fprintf (arquivo_01,"Peso Recuperado=%s\n\n", nome_arquivo_PR);
@@ -799,7 +800,7 @@ segundo);
 			
 		//strcpy (nome_arquivo_01, nome_arquivo_aux);
 		strcat (nome_arquivo_D_TRE, "DADO_TRE.TXT");
-
+		puts(nome_arquivo_D_TRE);
 		strcpy (nome_arquivo_02, nome_arquivo_aux);
 
 		strcat (nome_arquivo_S_TRE, "SAIDA_TRE.TXT");
