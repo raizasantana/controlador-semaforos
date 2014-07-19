@@ -14,12 +14,7 @@
 #define MENOR 1
 #define IGUAL 2
 
-/*Trafego
-#define NORMAL 3
-#define LENTO 4
-#define PARADO 5
-#define RAPIDO 6
-*/
+//Trafego
 #define PARADO 6
 #define LENTO 5
 #define NORMAL 4
