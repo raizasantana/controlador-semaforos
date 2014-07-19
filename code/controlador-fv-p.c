@@ -1,5 +1,5 @@
 /*
-* Controlador de Fluxo de Veiculos - Via Principal
+* Controlador de Fluxo de Veiculos 
 */
 
 #include <stdio.h>
@@ -14,11 +14,16 @@
 #define MENOR 1
 #define IGUAL 2
 
-//Trafego
+/*Trafego
 #define NORMAL 3
 #define LENTO 4
 #define PARADO 5
 #define RAPIDO 6
+*/
+#define PARADO 6
+#define LENTO 5
+#define NORMAL 4
+#define RAPIDO 3
 
 FILE *arquivo;
 char registro02 [100] = "\0";
@@ -108,22 +113,52 @@ int carrega_massa (char *endereco_arquivo, MASSA *massa)
 	return(MAXIMO);
 }
 
-int qual_situacao(int qtd_massa, MASSA massa[])
+void imprime_situacao(int risco) //Situacao da pista analisada
+{
+
+	switch(risco)
+	{	
+		case 4:
+			printf ("Trafego Normal.", risco);
+		break;
+
+		case 5:
+			printf ("Trafego Lento.", risco);
+		break;
+
+		case 6:
+			printf ("Trafego Parado.", risco);
+		break;
+
+		case 3:
+			printf ("Trafego Rapido.", risco);
+		break;
+	}
+}
+
+
+int qual_situacao(int pista, int qtd_massa, MASSA massa[])
 {
 	int i = 0, r = 0;
 
 	
 	i = rand() % qtd_massa;
 //	i = num_aleatorio(qtd_massa); //qtd_massa = qtd de instantes disponiveis
-	
-	printf ("Seq=%d ", i); //Escolhendo um instante pra analisar
+
+	if(pista == 0)
+		printf("\nPista Principal: ");
+	else
+		printf("\nPista Secundaria: ");
+
+	printf ("Seq = %d ", i); //Escolhendo um instante pra analisar
 	
 	r = massa[i].Risco;
-
-	printf ("Situacao=%d \n", r); //Situacao da pista analisada
+	imprime_situacao(r);
+	//printf ("Situacao=%d \n", r); //Situacao da pista analisada
 
 	return (r);
 }
+
 
 int maior (int a, int b)
 {
@@ -137,22 +172,26 @@ void grava(int n)
 
 	arq_principal_S = abre_arquivo(end_arq_principal_S,"w");
 
+	printf("\n");
+
 	for (i = 1; i <= n; i++)
 	{
-		printf("\n\nSimulacao n%d\n",i);
+		printf("*** Simulacao n%d ***\n",i);
 		
-		pista_01 = qual_situacao(i, massa_via1);
+		pista_01 = qual_situacao(0, i, massa_via1);
 		
-		pista_02 = qual_situacao(i, massa_via2);
+		pista_02 = qual_situacao(1,i, massa_via2);
 		
 		resultado = maior (pista_01, pista_02);
 		
-		printf ("Situacao da pista = %d\n", resultado);
+		printf ("\nSituacao da Via ");
+		imprime_situacao(resultado);
 		srand (time(NULL));
 		sprintf(registro05, "%d  %d \n", i + 1,resultado);
 		
 		fputs (registro05, arq_principal_S);
 		
+		printf("\n-------------------------------------------------------\n\n");
 		
 	}
 	
