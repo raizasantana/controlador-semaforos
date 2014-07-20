@@ -8,7 +8,8 @@
 #include <time.h>
 #include <math.h>
 #include <float.h>
-#include <mpi.h>
+#include<mpi.h>
+
 
 //CFV
 #define MAIOR 0
@@ -126,19 +127,19 @@ void imprime_situacao(int risco) //Situacao da pista analisada
 	switch(risco)
 	{	
 		case 0:
-			printf ("Nenhum Fluxo.", risco);
+			printf ("Nenhum Fluxo.");
 		break;
 
 		case 1:
-			printf ("Fluxo Baixo.", risco);
+			printf ("Fluxo Baixo.");
 		break;
 
 		case 2:
-			printf ("Fluxo Medio.", risco);
+			printf ("Fluxo Medio.");
 		break;
 
 		case 3:
-			printf ("Fluxo Alto.", risco);
+			printf ("Fluxo Alto.");
 		break;
 	}
 }
