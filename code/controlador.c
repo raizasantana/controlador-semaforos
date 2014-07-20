@@ -8,6 +8,7 @@
 #include <time.h>
 #include <math.h>
 #include <float.h>
+#include <mpi.h>
 
 //CFV
 #define MAIOR 0
