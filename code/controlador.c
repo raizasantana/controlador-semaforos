@@ -38,14 +38,15 @@ char *end_arq_csi = "arquivos/tempo-ciclo-csi.TXT";
 FILE *arquivo;
 char registro02 [100] = "\0";
 
-int *G_06_Tempo_Verde;
-int *G_06_Tempo_Amarelo;
-int *G_06_Tempo_Vermelho;
+int *tempo_verde;
+int *tempo_amarelo;
+int *tempo_vermelho;
 int *G_07_Ordem;
 
 static sem_atual_1 = 0;
 static sem_atual_2 = 0;
 static int qtd_ciclos = 0;
+
 typedef struct
 {
 	int Sequencia;
@@ -165,13 +166,13 @@ int get_situacao(int pista, int qtd_massa, FLUXO fluxo[])
 *	CONTROLADOR SEMAFORO DE INTERSECAO
 */
 
-void p010_Recupera_Guarda_Tempo()
+void get_tempo_ciclo()
 {
-	int P010_01_Aux = 0, P010_02_Index = 0;
+	int aux = 0, indice = 0;
 
-	G_06_Tempo_Verde = (int *) calloc (24, sizeof(int));
-	G_06_Tempo_Amarelo = (int *) calloc (24, sizeof(int));
-	G_06_Tempo_Vermelho = (int *) calloc (24, sizeof(int));
+	tempo_verde = (int *) calloc (24, sizeof(int));
+	tempo_amarelo = (int *) calloc (24, sizeof(int));
+	tempo_vermelho = (int *) calloc (24, sizeof(int));
 
 	arquivo = fopen(end_arq_csi, "r");
 	
@@ -185,20 +186,20 @@ void p010_Recupera_Guarda_Tempo()
 	{
 		
 		//puts(G_02_Registro);
-		P010_01_Aux = atoi(strtok(registro02,";"));
-		P010_02_Index = P010_01_Aux - 1;
-		P010_01_Aux = atoi(strtok(NULL,";"));
-		G_06_Tempo_Verde[P010_02_Index] = P010_01_Aux;
-		P010_01_Aux = atoi(strtok(NULL,";"));
-		G_06_Tempo_Amarelo[P010_02_Index] = P010_01_Aux;
-		P010_01_Aux = atoi(strtok(NULL,";"));
-		G_06_Tempo_Vermelho[P010_02_Index] = P010_01_Aux;
+		aux = atoi(strtok(registro02,";"));
+		indice = aux - 1;
+		aux = atoi(strtok(NULL,";"));
+		tempo_verde[indice] = aux;
+		aux = atoi(strtok(NULL,";"));
+		tempo_amarelo[indice] = aux;
+		aux = atoi(strtok(NULL,";"));
+		tempo_vermelho[indice] = aux;
 	}
 
 	fclose(arquivo);
 }
 
-int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
+int mudar_sinal (int ordem_1, int ordem_2)
 {
 
 	/*
@@ -208,149 +209,149 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 	#define VERMELHO 3
 	*/
 
-	static P090_03_Proximo_1 = 0;
-	static P090_04_Proximo_2 = 0;
+	static proximo_1 = 0;
+	static proximo_2 = 0;
 
-	static P090_01_Sinal_1 = 0;
-	static P090_02_Sinal_2 = 0;	
+	static sinal_1 = 0;
+	static sinal_2 = 0;	
 
-	int P090_07_Qual_Tempo = 0;
-	int P090_08_Tempo_Recuperado = 0;
+	int qual_tempo = 0;
+	int tempo_rec = 0;
 
-	time_t P090_09_Inicio;
-	time_t P090_10_Fim;
+	time_t inicio;
+	time_t fim;
 
-	int P090_11_Diferenca = 0;
-	int P090_12_Fez_Recursividade = 0;
+	int diferenca = 0;
+	int recursividade = 0;
 
 	// achar qual o proximo ciclo
-	if (P090_01_Sinal_1 == INTERMITENTE && P090_01_Sinal_1 == INTERMITENTE) // intermitente
+	if (sinal_1 == INTERMITENTE && sinal_1 == INTERMITENTE) // intermitente
 	{
-		P090_03_Proximo_1 = VERMELHO;
-		P090_04_Proximo_2 = VERMELHO;
+		proximo_1 = VERMELHO;
+		proximo_2 = VERMELHO;
 	}
 	else
 	{
-		P090_03_Proximo_1 = P090_01_Sinal_1 + 1;
-		P090_04_Proximo_2 = P090_02_Sinal_2 + 1;
+		proximo_1 = sinal_1 + 1;
+		proximo_2 = sinal_2 + 1;
 		
-		if (P090_03_Proximo_1 > 3)
+		if (proximo_1 > 3)
 		{
-			if (P090_03_Proximo_1 > 3)
+			if (proximo_1 > 3)
 			{
 				if (sem_atual_1 == AMARELO)
-					P090_03_Proximo_1 = VERMELHO;
+					proximo_1 = VERMELHO;
 				else
 				{
-					if (P090_02_Sinal_2 == VERDE || P090_02_Sinal_2 == AMARELO)
-						P090_03_Proximo_1 = VERMELHO;
+					if (sinal_2 == VERDE || sinal_2 == AMARELO)
+						proximo_1 = VERMELHO;
 					else
-						P090_03_Proximo_1 = VERDE;
+						proximo_1 = VERDE;
 				}
 			}
 		}
 
-		if (P090_04_Proximo_2 > 3)
+		if (proximo_2 > 3)
 		{
-			if (P090_04_Proximo_2 > 3)
+			if (proximo_2 > 3)
 			{
 				if (sem_atual_2 == AMARELO)
-					P090_04_Proximo_2 = VERMELHO;
+					proximo_2 = VERMELHO;
 				else
 				{
-					if (P090_01_Sinal_1 == VERDE || P090_01_Sinal_1 == AMARELO)
-						P090_04_Proximo_2 = VERMELHO;
+					if (sinal_1 == VERDE || sinal_1 == AMARELO)
+						proximo_2 = VERMELHO;
 					else
 					{
 						if (sem_atual_1 == INTERMITENTE)	
-							P090_04_Proximo_2 = VERMELHO;
+							proximo_2 = VERMELHO;
 						else
-							P090_04_Proximo_2 = VERDE;
+							proximo_2 = VERDE;
 					}
 				}
 			}
 		}
 	}
 
-	if (P090_Ordem_1 == 0 && P090_Ordem_2 == 0) // nao eh uma ordem
+	if (ordem_1 == 0 && ordem_2 == 0) // nao eh uma ordem
 	{
 		// faltando o tratamento para mudar ao horario intermitente
-		P090_Ordem_1 = P090_03_Proximo_1;
-		P090_Ordem_2 = P090_04_Proximo_2;
-		printf("N O\n\n");
+		ordem_1 = proximo_1;
+		ordem_2 = proximo_2;
+
 	}
 
-	printf ("Mudar S1=%d S2=%d P1=%d P2=%d\n",P090_01_Sinal_1, P090_02_Sinal_2, P090_03_Proximo_1,P090_04_Proximo_2);
+	printf ("Mudar S1=%d S2=%d P1=%d P2=%d\n",sinal_1, sinal_2, proximo_1,proximo_2);
 	
 	// mudar o valor do sinal
-	sem_atual_1 = P090_01_Sinal_1;
-	sem_atual_2 = P090_02_Sinal_2;
-	P090_01_Sinal_1 = P090_03_Proximo_1;
-	P090_02_Sinal_2 = P090_04_Proximo_2;
+	sem_atual_1 = sinal_1;
+	sem_atual_2 = sinal_2;
+	sinal_1 = proximo_1;
+	sinal_2 = proximo_2;
 
 
-	switch(P090_01_Sinal_1)
+	switch(sinal_1)
 	{
-		case 1 : printf("S1=%d Verde\n", P090_01_Sinal_1);
+		case 1 : printf("S1=%d Verde\n", sinal_1);
 		break;
 
-		case 2 : printf("S1=%d Amarelo\n", P090_01_Sinal_1);
+		case 2 : printf("S1=%d Amarelo\n", sinal_1);
 		break;
 
-		case 3 : printf("S1=%d Vermelho\n", P090_01_Sinal_1);
+		case 3 : printf("S1=%d Vermelho\n", sinal_1);
 		break;	
-		default: printf("S1=%d Intermitente\n", P090_01_Sinal_1);
+		default: printf("S1=%d Intermitente\n", sinal_1);
 		break;
 	}
 
-	switch(P090_02_Sinal_2)
+	switch(sinal_2)
 	{
-		case 1 : printf("S2=%d Verde \n", P090_02_Sinal_2);
+		case 1 : printf("S2=%d Verde \n", sinal_2);
 		break;
 
-		case 2 : printf("S2=%d Amarelo \n", P090_02_Sinal_2);	
+		case 2 : printf("S2=%d Amarelo \n", sinal_2);	
 		break;
 
-		case 3 : printf("S2=%d Vermelho \n", P090_02_Sinal_2);
+		case 3 : printf("S2=%d Vermelho \n", sinal_2);
 		break;
 
-		default: printf("S2=%d Intermitente\n", P090_02_Sinal_2);
+		default: printf("S2=%d Intermitente\n", sinal_2);
 		break;
 	}
 
 
-	if (P090_01_Sinal_1 != P090_Ordem_1 || P090_02_Sinal_2 != P090_Ordem_2)
+	if (sinal_1 != ordem_1 || sinal_2 != ordem_2)
 	{
 		printf ("\n\n[Recursividade]\n\n");//realiza a mudança de sinal respeitando o tempo até a ordem ser executada
 		
-		P090_09_Inicio = time(NULL);
+		inicio = time(NULL);
 
-		while (P090_11_Diferenca <= 5) // cinco segundos
+		while (diferenca <= 5) // cinco segundos
 		{
-			P090_10_Fim = time(NULL);
-			P090_11_Diferenca = difftime(P090_10_Fim, P090_09_Inicio);
+			fim = time(NULL);
+			diferenca = difftime(fim, inicio);
 		}
 
-		p090_Mudar_Sinal (P090_Ordem_1, P090_Ordem_2);
-		P090_12_Fez_Recursividade = 1;
+		mudar_sinal (ordem_1, ordem_2);
+		recursividade = 1;
 	}
 
-	if (P090_12_Fez_Recursividade == 0)
+	if (recursividade == 0)
 	{
-		P090_07_Qual_Tempo = rand() % 24;
+		qual_tempo = rand() % 24;
 
-		P090_07_Qual_Tempo++;		
-		if (P090_01_Sinal_1 == VERDE)
-			P090_08_Tempo_Recuperado = G_06_Tempo_Verde[P090_07_Qual_Tempo];
+		qual_tempo++;		
+		if (sinal_1 == VERDE)
+			tempo_rec = tempo_verde[qual_tempo];
 		else
-			if (P090_01_Sinal_1 == AMARELO)
-				P090_08_Tempo_Recuperado = G_06_Tempo_Amarelo[P090_07_Qual_Tempo];
+			if (sinal_1 == AMARELO)
+				tempo_rec = tempo_amarelo[qual_tempo];
 		else	
-			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[P090_07_Qual_Tempo];
+			tempo_rec = tempo_vermelho[qual_tempo];
 		
+		printf ("\nTempo Sinal 1(%d)=%d\n\n", qual_tempo, tempo_rec);		
 		
-		
-		return(P090_08_Tempo_Recuperado);
+		return(tempo_rec);
 	}
 	else
 		return(0);
@@ -420,7 +421,8 @@ int processa_ordem(int ordem)
 		else	
 			printf ("\n\nCiclo Nr.=%d Ordem1=%d Ordem2=%d\n\n",qtd_ciclos, P100_06_Ordem_1, P100_07_Ordem_2);
 
-		P100_09_Tempo_Ciclo = p090_Mudar_Sinal (P100_06_Ordem_1,P100_07_Ordem_2);
+
+		P100_09_Tempo_Ciclo = mudar_sinal (P100_06_Ordem_1,P100_07_Ordem_2);
 		P100_01_Inicio = time(NULL);
 	
 }
@@ -519,7 +521,7 @@ int main(int argc, char *argv[])
 	pista_2 = get_situacao(1,100,fluxo_via2);
 	
 	l = le_entrada();
-	p010_Recupera_Guarda_Tempo();
+	get_tempo_ciclo();
 	estado_atual = get_estado_atual(sem_atual_1, sem_atual_2);
 	
 	ordem = get_ordem(pista_1, pista_2, estado_atual);
