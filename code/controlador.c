@@ -33,6 +33,10 @@
 #define AMARELO 2
 #define VERMELHO 3
 
+int rank, np, origem, destino, tag = 0;
+int l = 0, pista_1 = 0, pista_2 = 0, ordem = 0, estado_atual;
+MPI_Status status;
+
 char *end_arq_via1 = "arquivos/fluxo-p.txt";
 char *end_arq_via2 = "arquivos/fluxo-s.txt";
 char *end_arq_csi = "arquivos/tempo-ciclo-csi.TXT";
@@ -45,6 +49,7 @@ int *tempo_amarelo;
 int *tempo_vermelho;
 int *G_07_Ordem;
 
+int sp, ss;
 static sem_atual_1 = 0;
 static sem_atual_2 = 0;
 static int qtd_ciclos = 0;
@@ -145,23 +150,24 @@ void imprime_situacao(int risco) //Situacao da pista analisada
 }
 
 
-int get_situacao(int pista, int qtd_massa, FLUXO fluxo[])
+int get_situacao(int pista, int qtd_massa, FLUXO fluxo[], int r)
 {
-	int i = 0, r = 0;
-
+	int i = 0, sit = 0;
 	i = rand() % qtd_massa;
 
+	printf("\nProcesso %d :: ",r);
+
 	if(pista == 0)
-		printf("\nPista Principal: ");
+		printf("Pista Principal: ");
 	else
-		printf("\nPista Secundaria: ");
+		printf("Pista Secundaria: ");
 
-	printf ("Seq = %d ", i); //Escolhendo um instante pra analisar
+	printf ("| Seq = %d | ", i); //Escolhendo um instante pra analisar
 	
-	r = fluxo[i].situacao;
-	imprime_situacao(r);
+	sit = fluxo[i].situacao;
+	imprime_situacao(sit);
 
-	return (r);
+	return (sit);
 }
 
 /*
@@ -201,7 +207,7 @@ void get_tempo_ciclo()
 	fclose(arquivo);
 }
 
-int mudar_sinal (int ordem_1, int ordem_2)
+int mudar_sinal (int ordem_1, int sp, int ordem_2, int ss)
 {
 
 	/*
@@ -283,7 +289,7 @@ int mudar_sinal (int ordem_1, int ordem_2)
 
 	}
 
-	printf ("Mudar S1=%d S2=%d P1=%d P2=%d\n",sinal_1, sinal_2, proximo_1,proximo_2);
+	printf ("Mudar S%d=%d S%d=%d P%d=%d P%d=%d\n",sp, sinal_1, ss, sinal_2, sp, proximo_1, ss, proximo_2);
 	
 	// mudar o valor do sinal
 	sem_atual_1 = sinal_1;
@@ -334,7 +340,7 @@ int mudar_sinal (int ordem_1, int ordem_2)
 			diferenca = difftime(fim, inicio);
 		}
 
-		mudar_sinal (ordem_1, ordem_2);
+		mudar_sinal (ordem_1, sp, ordem_2, ss);
 		recursividade = 1;
 	}
 
@@ -351,7 +357,7 @@ int mudar_sinal (int ordem_1, int ordem_2)
 		else	
 			tempo_rec = tempo_vermelho[qual_tempo];
 		
-		printf ("\nTempo Sinal 1(%d)=%d\n\n", qual_tempo, tempo_rec);		
+		printf ("\nRegulagem completa. Tempo de sinal %d.\n\n",tempo_rec);		
 		
 		return(tempo_rec);
 	}
@@ -359,7 +365,7 @@ int mudar_sinal (int ordem_1, int ordem_2)
 		return(0);
 }
 
-int processa_ordem(int ordem)
+int processa_ordem(int ordem, int rank)
 {
 	time_t P100_01_Inicio;
 	time_t P100_02_Fim;
@@ -418,13 +424,15 @@ int processa_ordem(int ordem)
 		if (P100_06_Ordem_1 != 0 && P100_07_Ordem_2 != 0)
 		{
 			P100_10_Qtd_Ordem++;
-			printf ("\n\nOrdem Nr.=%d Ordem1=%d Ordem2=%d\n\n",P100_10_Qtd_Ordem, P100_06_Ordem_1, P100_07_Ordem_2);
+			printf ("\n\nProcesso %d :: Ordem Nr.=%d Ordem1=%d Ordem2=%d\n\n",rank,P100_10_Qtd_Ordem, P100_06_Ordem_1, P100_07_Ordem_2);
 		}
-		else	
-			printf ("\n\nCiclo Nr.=%d Ordem1=%d Ordem2=%d\n\n",qtd_ciclos, P100_06_Ordem_1, P100_07_Ordem_2);
+		else
+		{	
+			printf("\n\nCiclo normal do semáforo.\n");
+			printf ("Processo %d :: Ciclo Nr.=%d Ordem1 = %d Ordem2=%d\n\n",rank, qtd_ciclos, P100_06_Ordem_1, P100_07_Ordem_2);
+		}
 
-
-		P100_09_Tempo_Ciclo = mudar_sinal (P100_06_Ordem_1,P100_07_Ordem_2);
+		P100_09_Tempo_Ciclo = mudar_sinal (P100_06_Ordem_1, sp, P100_07_Ordem_2, ss);
 		P100_01_Inicio = time(NULL);
 	
 }
@@ -507,29 +515,106 @@ int get_estado_atual (int s1, int s2)
 		return 3;//AMBOS
 }
 
-
-/*
-*	PROGRAMA PRINCIPAL
-*/
-int main(int argc, char *argv[])
-{	
-	int l = 0, pista_1 = 0, pista_2 = 0, ordem = 0, estado_atual;
+void regula_semaforo(int r)
+{
 	
 	l = carrega_fluxo(end_arq_via1, fluxo_via1);
 	l = carrega_fluxo(end_arq_via2, fluxo_via2);
 	
-	pista_1 = get_situacao(0,100,fluxo_via1);
+	pista_1 = get_situacao(0,100,fluxo_via1,r);
 	srand((unsigned) time(NULL));
-	pista_2 = get_situacao(1,100,fluxo_via2);
+	pista_2 = get_situacao(1,100,fluxo_via2,r);
 	
 	l = le_entrada();
 	get_tempo_ciclo();
 	estado_atual = get_estado_atual(sem_atual_1, sem_atual_2);
 	
 	ordem = get_ordem(pista_1, pista_2, estado_atual);
-
-	processa_ordem(ordem);
-	return 0;
+	processa_ordem(ordem,r);
 }
+/*
+*	PROGRAMA PRINCIPAL
+*/
+int main(int argc, char *argv[])
+{	
+	
+	//Iniciando o MPI
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD,&rank);	
+	MPI_Comm_size(MPI_COMM_WORLD,&np);
+
+	char *msg;
+	msg = malloc(20);
+	int status_pista;
+
+	if(rank == 0) //Primeiro cruzamento
+	{	sp = 1; ss = 2;
+
+		printf("\n*****************************************************\n*** Controlador de Fluxo de Veículos ***\n*****************************************************\n");
+		
+		printf("\n\tProcesso 0\n");
+		regula_semaforo(rank);
+		
+		//Wait
+		destino = 1;
+		MPI_Send(&pista_1,1,MPI_INT,destino,tag,MPI_COMM_WORLD);
+
+		//Recebe status da outra pista 
+		origem = 1; tag = 0;
+		MPI_Recv(&status_pista,1,MPI_INT,origem,tag, MPI_COMM_WORLD,&status);
+		printf("\n\nP0::::Situacao da pista principal 2 %d",status_pista);
+	}
+	if (rank == 1)//Segundo cruzamento
+	{	
+		//GO
+		origem = 0; tag = 0;
+		MPI_Recv(&status_pista,1,MPI_INT,origem,tag, MPI_COMM_WORLD,&status);
+
+		sp = 5; ss = 6;
+		printf("\n\tProcesso 1\n");	
+		regula_semaforo(rank);
+		
+		destino = 0; tag = 0;	
+		MPI_Send(&pista_1,1,MPI_INT,destino,tag,MPI_COMM_WORLD);
+		
+	}			
+
+	MPI_Finalize();
+	return 0;
+	/*if (rank != 0) //Processo receptor
+	{
+		sprintf(msg,"Processo %d está vivo!",rank);
+		destino = 0;
+		MPI_Send(msg,strlen(msg)+1,MPI_CHAR,destino,tag,MPI_COMM_WORLD);
+	} else
+	{	printf("Esperando msgs...\n");
+		//for(origem = 1; origem < np; origem++)	
+		//{
+			MPI_Recv(msg,1,MPI_CHAR,origem,tag,MPI_COMM_WORLD,&status);
+			printf("%d MSG %s\n",origem,msg);
+		//}
+	}*/
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
