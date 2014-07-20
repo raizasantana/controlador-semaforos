@@ -194,7 +194,7 @@ void p010_Recupera_Guarda_Tempo()
 		P010_01_Aux = atoi(strtok(NULL,";"));
 		G_06_Tempo_Vermelho[P010_02_Index] = P010_01_Aux;
 	}
-	
+
 	fclose(arquivo);
 }
 
@@ -339,8 +339,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 	{
 		P090_07_Qual_Tempo = rand() % 23;
 
-		//P090_07_Qual_Tempo++;
-		printf("\n TEMPO %d\n",P090_07_Qual_Tempo);		
+		P090_07_Qual_Tempo++;		
 		if (P090_01_Sinal_1 == VERDE)
 			P090_08_Tempo_Recuperado = G_06_Tempo_Verde[P090_07_Qual_Tempo];
 		else
@@ -349,7 +348,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 		else	
 			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[23];
 		
-		printf ("\nTempo Sinal 1(%d)=%d\n\n", P090_07_Qual_Tempo,P090_08_Tempo_Recuperado);
+		
 		
 		return(P090_08_Tempo_Recuperado);
 	}
@@ -520,7 +519,7 @@ int main(int argc, char *argv[])
 	pista_2 = get_situacao(1,100,fluxo_via2);
 	
 	l = le_entrada();
-	
+	p010_Recupera_Guarda_Tempo();
 	estado_atual = get_estado_atual(sem_atual_1, sem_atual_2);
 	
 	ordem = get_ordem(pista_1, pista_2, estado_atual);
