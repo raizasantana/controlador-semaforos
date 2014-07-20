@@ -337,7 +337,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 
 	if (P090_12_Fez_Recursividade == 0)
 	{
-		P090_07_Qual_Tempo = rand() % 23;
+		P090_07_Qual_Tempo = rand() % 24;
 
 		P090_07_Qual_Tempo++;		
 		if (P090_01_Sinal_1 == VERDE)
@@ -346,7 +346,7 @@ int p090_Mudar_Sinal (int P090_Ordem_1, int P090_Ordem_2)
 			if (P090_01_Sinal_1 == AMARELO)
 				P090_08_Tempo_Recuperado = G_06_Tempo_Amarelo[P090_07_Qual_Tempo];
 		else	
-			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[23];
+			P090_08_Tempo_Recuperado = G_06_Tempo_Vermelho[P090_07_Qual_Tempo];
 		
 		
 		
@@ -415,10 +415,10 @@ int processa_ordem(int ordem)
 		if (P100_06_Ordem_1 != 0 && P100_07_Ordem_2 != 0)
 		{
 			P100_10_Qtd_Ordem++;
-			printf ("\n\n>>Ordem Nr.=%d Ordem1=%d Ordem2=%d\n",P100_10_Qtd_Ordem, P100_06_Ordem_1, P100_07_Ordem_2);
+			printf ("\n\nOrdem Nr.=%d Ordem1=%d Ordem2=%d\n\n",P100_10_Qtd_Ordem, P100_06_Ordem_1, P100_07_Ordem_2);
 		}
 		else	
-			printf ("\n\n==Ciclo Nr.=%d Ordem1=%d Ordem2=%d\n",qtd_ciclos, P100_06_Ordem_1, P100_07_Ordem_2);
+			printf ("\n\nCiclo Nr.=%d Ordem1=%d Ordem2=%d\n\n",qtd_ciclos, P100_06_Ordem_1, P100_07_Ordem_2);
 
 		P100_09_Tempo_Ciclo = p090_Mudar_Sinal (P100_06_Ordem_1,P100_07_Ordem_2);
 		P100_01_Inicio = time(NULL);
