@@ -7,7 +7,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAXIMO 10
+#define MAXIMO 100
 
 //Variacao
 #define MAIOR 0
@@ -20,15 +20,16 @@
 #define NORMAL 4
 #define RAPIDO 3
 
+
 FILE *arquivo;
 char registro02 [100] = "\0";
 
-char *end_arq_via1 = "arquivos/fluxo-p-via1.txt";
-char *end_arq_via2 = "arquivos/fluxo-p-via2.txt";
+char *end_arq_via1 = "arquivos/S1-fluxo-p.txt";
+char *end_arq_via2 = "arquivos/S2-fluxo-s.txt";
 
 FILE *arq_principal_S;
 char registro05 [100] = "\0";
-char *end_arq_principal_S = "arquivos/cfv_principal_S.txt";
+char *end_arq_principal_S = "arquivos/situacao_via.txt";
 
 typedef struct
 {

@@ -7,7 +7,12 @@
 
 #define raizquadrada(x) ((x) * (x))
 
-
+/*Ordem
+ambos 3
+nenhuma 0
+bloqueado 1
+liberado 2
+*/
 
 int * qtd_neuronio;
 double * entrada_01;
@@ -735,11 +740,6 @@ void treina_rede(char *nome_entrada, char *nome_saida)
 	fclose (arquivo_02);
 }
 
-
-
-int p210_Avalia_Rede()
-{
-}
 	
 
 int main(int argc, char *argv[])
@@ -813,7 +813,7 @@ segundo);
 		puts(nome_arquivo_01);
 		treina_rede(nome_arquivo_01, nome_arquivo_02);
 	
-		//p210_Avalia_Rede();
+
 		//treina_rede("RNL-TS.TXT", "RNL-SS.TXT");
 		//printf ("%f ", funcao_ativacao(entrada,funcao_ativacao));
 		//printf ("%f\n",

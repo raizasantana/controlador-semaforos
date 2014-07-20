@@ -82,7 +82,7 @@ void p040_Recupera_Ordem(int P040_Ordem)
 	int P040_01_Aux = 0, P040_02_Index = 0;
 
 	G_07_Ordem = (int *) calloc (P040_Ordem, sizeof(int));
-
+	printf("\nOrdem %d\n",G_07_Ordem[0]);
 	G_01_Arquivo = fopen (G_04_Endereco_Arquivo, "r");
 
 	if (!G_01_Arquivo)
@@ -98,9 +98,11 @@ void p040_Recupera_Ordem(int P040_Ordem)
 
 		P040_01_Aux = atoi(strtok(G_02_Registro,";"));
 		P040_02_Index = P040_01_Aux;
-	
+		printf("\n 40 01 i %d",P040_01_Aux);
 		if (P040_02_Index > P040_Ordem)
+		{	printf("40 02 %d\n",P040_02_Index);
 			break;
+		}
 
 		P040_01_Aux = atoi(strtok(NULL,";"));
 		G_07_Ordem[P040_02_Index] = P040_01_Aux;

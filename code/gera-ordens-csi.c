@@ -2,6 +2,9 @@
 
 #define N 10
 
+#define nenhuma 0
+#define ambos 1
+#define bloqueado 
 int main()
 {
 	int i, aux = 0;
@@ -15,7 +18,7 @@ int main()
 		aux = rand()%3;
 		printf("%d;%d\n",i,aux);
 			
-		sprintf(registro, "%d;%d\n",i,aux);
+		sprintf(registro, "%d\n",aux);
 		
 		fputs (registro, arquivo);
 	}
