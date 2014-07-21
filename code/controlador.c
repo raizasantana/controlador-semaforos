@@ -70,7 +70,6 @@ typedef struct
 	int sequencia, fp, fs, sa, op,or;
 } ENTRADA;
 
-
 ENTRADA *entrada;
 FLUXO fluxo_via1[MAXIMO], fluxo_via2[MAXIMO];
 
@@ -277,7 +276,7 @@ int mudar_sinal (int ordem_1, int sp, int ordem_2, int ss, int rank)
 
 	}
 
-	printf ("P%d :: Mudar S%d=%d S%d=%d P%d=%d P%d=%d\n",rank, sp, sinal_1, ss, sinal_2, sp, proximo_1, ss, proximo_2);
+	printf ("\nP%d :: Mudar S%d=%d S%d=%d P%d=%d P%d=%d\n",rank, sp, sinal_1, ss, sinal_2, sp, proximo_1, ss, proximo_2);
 	
 	// mudar o valor do sinal
 	sem_atual_1 = sinal_1;
@@ -522,6 +521,13 @@ void regula_semaforo(int r, int sp, int ss)
 	ordem = get_ordem(pista_1, pista_2, estado_atual);
 	processa_ordem(ordem,sp, ss, rank);
 }
+
+void regula_semaforo_f(int ordem, int r, int sp, int ss)
+{
+
+	processa_ordem(ordem,sp, ss, r);
+}
+
 /*
 *	PROGRAMA PRINCIPAL
 */
@@ -551,36 +557,43 @@ int main(int argc, char *argv[])
 		origem = 1; tag = 0;
 		MPI_Recv(&status_pista,1,MPI_INT,origem,tag, MPI_COMM_WORLD,&status);
 
+		int ordem = 0;
+		if(status_pista == NENHUM || status_pista == BAIXO)
+		{	
+			ordem = 1; destino = 1;
+			printf("Mudando P0\n\n");			
+			regula_semaforo_f(1, rank, sp, ss);
+			MPI_Send(&ordem,1,MPI_INT,destino,2,MPI_COMM_WORLD);	
+			
+		}
 	}
 	if (rank == 1)//Segundo cruzamento
 	{	
 		sp = 5; ss = 6;
-				
-		regula_semaforo(rank, sp, ss);
-		pista_1 = get_situacao(0,fluxo_via1,rank);
-		srand((unsigned) time(NULL));
-		pista_2 = get_situacao(1,fluxo_via2,rank);
+		int ordem_r = 0;		
+		
+		
+		get_tempo_ciclo();
+		mudar_sinal(0,sp,0,ss,rank);
 
+		pista_1 = get_situacao(0,fluxo_via1,rank);
+
+		//Enviando a situacao da pista principal
 		destino = 0; tag = 0;	
 		MPI_Send(&pista_1,1,MPI_INT,destino,tag,MPI_COMM_WORLD);
+
+		//Recebendo ordem
+		origem = 0; 		
+		MPI_Recv(&ordem_r,1,MPI_INT,origem,2, MPI_COMM_WORLD,&status);
+			printf("Mudando P1\n\n");	
+		regula_semaforo_f(ordem, rank, sp, ss);
+
 		
 	}			
 
 	MPI_Finalize();
+
 	return 0;
-	/*if (rank != 0) //Processo receptor
-	{
-		sprintf(msg,"Processo %d está vivo!",rank);
-		destino = 0;
-		MPI_Send(msg,strlen(msg)+1,MPI_CHAR,destino,tag,MPI_COMM_WORLD);
-	} else
-	{	printf("Esperando msgs...\n");
-		//for(origem = 1; origem < np; origem++)	
-		//{
-			MPI_Recv(msg,1,MPI_CHAR,origem,tag,MPI_COMM_WORLD,&status);
-			printf("%d MSG %s\n",origem,msg);
-		//}
-	}*/
 
 }
 
